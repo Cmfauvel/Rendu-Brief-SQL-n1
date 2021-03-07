@@ -1,0 +1,280 @@
+Terminal 
+Entrer : mysql -h localhost -u root
+(Enter password:)//falcutatif
+
+CREATE DATABASE SQLix DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+Pour créer une table :
+
+USE SQLix
+
+CREATE TABLE qualite (
+num_qualite INT AUTO_INCREMENT,
+lib_qualite VARCHAR(30),
+PRIMARY KEY (num_qualite)
+)
+ENGINE=INNODB;
+
+INSERT INTO qualite (num_qualite,	lib_qualite)
+VALUES (1,	'Chef'),
+(2, 'Druide'),
+(3, 'Barde'),
+(4, 'Guerrier'),
+(5, 'Chasseur'),
+(6, 'Livreur de menhirs'),
+(7, 'Facteur'),
+(8, 'Poissonnière'),
+(9, 'Serveuse');
+
+CREATE TABLE province (
+num_province INT AUTO_INCREMENT,
+nom_province VARCHAR(30),
+nom_gouverneur VARCHAR(30),
+PRIMARY KEY (num_province)
+)
+ENGINE=INNODB;
+
+INSERT INTO province (num_province,	nom_province,	nom_gouverneur)
+VALUES (1, 'Armorique',	'Garovirus'),
+(2, 'Averne', 'Nenpeuplus'),
+(3, 'Aquitaine', 'Yenapus');
+
+
+CREATE TABLE village (
+num_village INT AUTO_INCREMENT,
+nom_village VARCHAR(30),
+nb_huttes INT,
+num_province INT,
+PRIMARY KEY (num_village),
+CONSTRAINT FOREIGN KEY (num_province) REFERENCES province (num_province)
+)
+ENGINE=INNODB;
+
+INSERT INTO village (num_village,	nom_village,	nb_huttes,	num_province)
+VALUES (1,	'Aquilona',	52,	1),
+(2,	'Lutèce',	25,	2),
+(3,	'Aginum',	33,	3),
+(4,	'Calendes Aquae',	42,	2),
+(5,	'Condate',	38,	1),
+(6,	'Gergovie',	55,	3),
+(7,	'Aquae Calidae',	35,	2);
+
+
+CREATE TABLE habitant (
+num_hab INT AUTO_INCREMENT,
+nom VARCHAR(30),
+age INT,
+num_qualite INT,
+num_village INT,
+PRIMARY KEY (num_hab),
+CONSTRAINT FOREIGN KEY (num_qualite) REFERENCES qualite (num_qualite),
+CONSTRAINT FOREIGN KEY (num_village) REFERENCES village (num_village)
+)
+ENGINE=INNODB;
+
+INSERT INTO habitant (num_hab,	nom,	age,	num_qualite,	num_village)
+VALUES (1,	'Abraracourcix',	65,	1,	1),
+(2,	'Amnésix',	56,	2,	7),
+(3,	'Barometrix',	68,	2,	3),
+(4,	'Panoramix',	79,	2,	1),
+(5,	'Assurancetourix',	53,	3,	1),
+(6,	'Zérozérosix',	75,	2,	4),
+(7,	'Astérix',	35,	4,	1),
+(8,	'Bellodalix', 32,	4,	7),
+(9,	'Cétyounix',	32,	4,	4),
+(10,	'Homéopatix',	48,	5,	6),
+(11,	'Obélix',	38,	6,	1),
+(12,	'Plantaquatix',	30,	5,	5),
+(13,	'Moralélastix',	67,	1,	2),
+(14,	'Pneumatix',	26,	7,	1),
+(15,	'Pronostix',	35,	4,	5),
+(16,	'Goudurix',	38,	4,	2),
+(17,	'Océanix',	40,	5,	5),
+(18,	'Asdepix',	53,	1,	5),
+(19,	'Eponine',	48,	8,	2),
+(20,	'Falbala',	26,	9,	1),
+(21,	'Gélatine',	65,	NULL,	6),
+(22,	'Fanzine',	21,	NULL,	3);
+
+CREATE TABLE resserre (
+num_resserre INT AUTO_INCREMENT,
+nom_resserre VARCHAR(30),
+superficie INT,
+num_village INT,
+PRIMARY KEY (num_resserre),
+CONSTRAINT FOREIGN KEY (num_village) REFERENCES village (num_village)
+)
+ENGINE=INNODB;
+
+INSERT INTO resserre (num_resserre,	nom_resserre,	superficie,	num_village)
+VALUES (1,	'Albinus',	720,	4),
+(2, 'Vercingetorix',	500,	6),
+(3,	'Sintrof',	895,	1);
+
+CREATE TABLE categorie (
+code_cat CHAR(3),
+nom_categ VARCHAR(50),
+nb_points INT,
+PRIMARY KEY (code_cat)
+)
+ENGINE=INNODB;
+
+INSERT INTO categorie (code_cat,	nom_categ,	nb_points)
+VALUES ('BCN',	'Bouclier de Centurion',	6),
+('BDN',	'Bouclier de Décurion',	4),
+('BLE',	'Bouclier de Légionnaire',	3),
+('BLT',	'Bouclier de Légat',	10),
+('CCN',	'Casque de Centurion',	3),
+('CDN',	'Casque de Décurion',	2),
+('CLE',	'Casque de Légionnaire',	1),
+('CLT',	'Casque de Légat',	4);
+
+CREATE TABLE trophee (
+num_trophee INT AUTO_INCREMENT,
+date_prise DATETIME,
+code_cat CHAR(3),
+num_preneur INT,
+num_resserre INT,
+PRIMARY KEY (num_trophee),
+CONSTRAINT FOREIGN KEY (code_cat) REFERENCES categorie (code_cat),
+CONSTRAINT FOREIGN KEY (num_preneur) REFERENCES habitant (num_hab),
+CONSTRAINT FOREIGN KEY (num_resserre) REFERENCES resserre (num_resserre)
+)
+ENGINE=INNODB;
+
+INSERT INTO trophee (num_trophee,	date_prise,	code_cat,	num_preneur,	num_resserre)
+VALUES (1,	'2052-04-03 00:00:00',	'BLE',	7,	3),
+(2,	'2052-04-03 00:00:00',	'BLT',	11,	3),
+(3,	'2052-05-05 00:00:00',	'CDN',	15,	1),
+(4,	'2052-05-05 00:00:00',	'CLE', 16,	2),
+(5,	'2052-06-06 00:00:00',	'CCN',	16,	2),
+(6,	'2052-06-06 00:00:00',	'BLT',	8,	1),
+(7,	'2052-08-18 00:00:00',	'CCN',	8,	1),
+(8,	'2052-09-20 00:00:00',	'CLT',	1,	3),
+(9,	'2052-10-23 00:00:00',	'CDN',	7,	2),
+(10,	'2052-10-23 00:00:00',	'CLE',	16,	1);
+
+CREATE TABLE potion (
+num_potion INT AUTO_INCREMENT,
+lib_potion VARCHAR(40),
+formule VARCHAR(30),
+constituant_principal VARCHAR(30),
+PRIMARY KEY (num_potion)
+)
+ENGINE=INNODB;
+
+INSERT INTO potion (num_potion, lib_potion,	formule,	constituant_principal)
+VALUES (1,	'Potion magique n°1', NULL, 'Gui'),
+(2,	'Potion magique n°2', '4V3C2VA', 'Vin'),
+(3,	'Potion magique n°3', '2C1B', 'Calva'),
+(4,	'Potion Zen', NULL, 'Jus de Betterave'),
+(5,	'Potion Anti-Douleur', '5C3J1T', 'Calva');
+
+
+CREATE TABLE fabriquer (
+num_potion INT,
+num_hab INT,
+PRIMARY KEY (num_potion),
+PRIMARY KEY (num_hab),
+CONSTRAINT FOREIGN KEY (num_potion) REFERENCES potion (num_potion),
+CONSTRAINT FOREIGN KEY (num_hab) REFERENCES habitant (num_hab)
+)
+ENGINE=INNODB;
+
+INSERT INTO fabriquer (num_potion,	num_hab)
+VALUES (1,	4),
+(2, 2),
+(3,	3),
+(4,	4),
+(4,	6),
+(5,	2),
+(5,	4);
+
+CREATE TABLE absorber (
+num_potion INT,
+date_a DATETIME,
+num_hab INT,
+quantite INT,
+PRIMARY KEY (date_a),
+PRIMARY KEY (num_potion),
+PRIMARY KEY (num_hab),
+CONSTRAINT FOREIGN KEY (num_potion) REFERENCES potion (num_potion),
+CONSTRAINT FOREIGN KEY (num_hab) REFERENCES habitant (num_hab)
+)
+ENGINE=INNODB;
+
+INSERT INTO absorber (num_potion,	date_a,	num_hab,	quantite)
+VALUES (1,	'2052-02-18 00:00:00',	7,	3),
+(2,	'2052-02-18 00:00:00',	12,	4),
+(1,	'2052-02-20 00:00:00',	2,	2),
+(1,	'2052-02-20 00:00:00',	8,	2),
+(3,	'2052-02-20 00:00:00',	7,	1),
+(1,	'2052-04-03 00:00:00',	7,	1),
+(1,	'2052-04-03 00:00:00',	15,	2),
+(2,	'2052-04-03 00:00:00',	13, 5),
+(3,	'2052-04-03 00:00:00',	10,	4),
+(4,	'2052-05-05 00:00:00',	15,	2),
+(5,	'2052-05-10 00:00:00',	1,	4),
+(5,	'2052-05-10 00:00:00',	2,	1),
+(1,	'2052-06-06 00:00:00',	13,	2),
+(2,	'2052-06-06 00:00:00',	7,	1),
+(3,	'2052-06-06 00:00:00',	8,	4),
+(5,	'2052-06-07 00:00:00',	1,	2),
+(5,	'2052-07-17 00:00:00',	7,	1),
+(2,	'2052-07-18 00:00:00',	7,	3),
+(1,	'2052-08-18 00:00:00',	8,	3),
+(1,	'2052-08-18 00:00:00',	16,	1),
+(3,	'2052-08-18 00:00:00',	10,	2),
+(4,	'2052-08-18 00:00:00',	7,	2),
+(3,	'2052-09-20 00:00:00',	7,	5),
+(4,	'2052-09-20 00:00:00',	1,	2),
+(2,	'2052-10-23 00:00:00',	7,	4),
+(3,	'2052-10-23 00:00:00',	13,	1),
+(4,	'2052-10-23 00:00:00',	13,	3),
+(1,	'2052-11-26 00:00:00',	10,	2),
+(2,	'2052-11-26 00:00:00',	8,	2),
+(5,	'2052-11-26 00:00:00',	13,	2),
+(5,	'2052-11-26 00:00:00',	16,	2);
+
+Elle vous demande de créer un utilisateur appelé "sqlix_u" qui permettra à la plateforme de jeu de se connecter et interagir avec la BDD. L’utilisateur aura le droit de lire, insérer, modifier et supprimer des données.
+
+CREATE USER 'sqlix_u'@'localhost' IDENTIFIED BY '';
+GRANT SELECT, INSERT, UPDATE, DELETE ON SQLix.* TO 'sqlix_u'@'localhost';
+
+//-----------------SAUVEGARDER ET RESTAURER BD
+
+L'exemple suivant crée une unité de sauvegarde logique pour un périphérique à bandes. Il sauvegarde ensuite la base de données SQLTestDB complète sur ce périphérique.
+
+-- Create a logical backup device,
+-- SQLTestDB_Bak_Tape, for tape device \\.\tape0.
+USE root;
+GO
+EXEC sp_addumpdevice 'tape', 'SQLix_Bak_Tape', '\\.\tape0'; USE SQLix;
+GO
+BACKUP DATABASE SQLix
+   TO SQLixDB_Bak_Tape
+   WITH FORMAT,
+      MEDIANAME = 'SQLix_Bak_Tape',
+      MEDIADESCRIPTION = '\\.\tape0',
+      NAME = 'Full Backup of SQLix';
+GO
+
+//------------------REGEX
+
+^([0-9]+)\t([a-z]+)\t([ \w ]+)$
+à partir du début je sélectione un nombre un espace un mot  un autre mot (ect...)
+\w remplace 0-9
+
+
+//-------------------BACKUP LOGIQUE
+Aller dans le dossier qui contient le mysqldump
+C:\wamp64\bin\mysql\mysql5.7.31\bin
+
+
+mysqldump --user=root --databases SQLix > SQLix20_02.sql
+
+Pour restaurer :
+CREATE DATABASE doublon_SQLix DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+# après avoir créé la nouvelle base, dans le shell,
+# donc après avoir quitté mysql !
+mysql -u root -h localhost -p doublon_sqlix < SQLix20_02.sql
